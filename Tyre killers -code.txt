@@ -1,0 +1,187 @@
+const int columnPins[] = {A4,A3,A2,A1};
+const int rowPins[] = {2,3,4};
+
+byte green1[]  = {B0111,B0000,B1000};
+byte green2[]  = {B1011,B0000,B0100};
+byte green3[]  = {B1101,B0000,B0010};
+byte green4[]  = {B1110,B0000,B0001};
+byte orange1[] = {B0111,B1000,B0000};
+byte orange2[] = {B1011,B0100,B0000};
+byte orange3[] = {B1101,B0010,B0000};
+byte orange4[] = {B1110,B0001,B0000};
+byte Allred[]  = {B1111,B0000,B0000};
+  
+
+#define in1 13
+#define in2 12
+#define in3 9
+#define in4 8
+#define in5 11
+#define in6 10
+#define in7 7
+#define in8 6
+
+
+void m1up()
+{
+  digitalWrite(in1,HIGH);
+  digitalWrite(in2,LOW);
+}
+
+void m1down()
+{
+  digitalWrite(in1,LOW);
+  digitalWrite(in2,HIGH);
+}
+
+void m2up()
+{
+  digitalWrite(in3,HIGH);
+  digitalWrite(in4,LOW);
+}
+
+void m2down()
+{
+  digitalWrite(in3,LOW);
+  digitalWrite(in4,HIGH);
+}
+
+void m3up()
+{
+  digitalWrite(in5,HIGH);
+  digitalWrite(in6,LOW);
+}
+void m3down()
+{
+  digitalWrite(in5,LOW);
+  digitalWrite(in6,HIGH);
+}
+
+void m4up()
+{
+  digitalWrite(in7,HIGH);
+  digitalWrite(in8,LOW);
+}
+void m4down()
+{
+  digitalWrite(in7,LOW);
+  digitalWrite(in8,HIGH);
+}
+
+void m1stop()
+{
+  digitalWrite(in2,LOW);
+  digitalWrite(in1,LOW);
+}
+void m2stop()
+{
+  digitalWrite(in4,LOW);
+  digitalWrite(in3,LOW);
+}
+void m3stop()
+{
+  digitalWrite(in6,LOW);
+  digitalWrite(in5,LOW);
+}
+void m4stop()
+{
+  digitalWrite(in8,LOW);
+  digitalWrite(in7,LOW);
+}
+void signal1()
+{
+      show(Allred,3000);
+      m1down();
+      show (green1,6000);
+      m1stop();
+      show (green1,7000);
+      m1up();
+      m2down();
+      show (orange1,3000);
+      show (green2,3000);
+      m1stop();
+      m2stop();
+}
+void signal2()
+{
+      show (green2,7000);
+      m2up();
+      m3down();
+      show (orange2,3000);
+      show (green3,3000);
+      m2stop();
+      m3stop();
+}
+void signal3()
+{
+      show (green3,7000);
+      m3up();
+      m4down();
+      show (orange3,3000);
+      show (green4,3000);
+      m3stop();
+      m4stop();
+}
+void signal4()
+{
+      show (green4,7000);
+      m4up();
+      show (orange4,3000);
+      show(Allred,3000);
+      m4stop();
+      show(Allred,10000);
+}
+void show( byte * image, unsigned long duration)
+{
+unsigned long start = millis(); 
+while (start + duration > millis()) 
+{
+for(int row = 0; row < 3; row++)
+{
+digitalWrite(rowPins[row], LOW); // connect row to +5 volts
+for(int column = 0; column < 4; column++)
+{
+boolean pixel = bitRead(image[row],column);
+if(pixel == 1)
+{
+digitalWrite(columnPins[column], HIGH); // connect column to Gnd
+}
+delayMicroseconds(300); // a small delay for each LED
+digitalWrite(columnPins[column], LOW); // disconnect column from Gnd
+}
+digitalWrite(rowPins[row], HIGH); // disconnect LEDs
+}
+}
+}
+void setup() 
+{
+  
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+  pinMode(in5, OUTPUT); 
+  pinMode(in6, OUTPUT);
+  pinMode(in7, OUTPUT);
+  pinMode(in8, OUTPUT);
+  for (int i = 0; i < 3; i++)
+{
+pinMode(rowPins[i], OUTPUT); // make all the LED pins outputs
+}
+for (int i = 0; i < 4; i++)
+{
+pinMode(columnPins[i], OUTPUT);// disconnect column pins from Ground
+}
+
+}
+int k=1;
+void loop()
+{
+  while(k--)
+  {
+    signal1();
+    signal2();
+    signal3();
+    signal4();
+  }
+}
